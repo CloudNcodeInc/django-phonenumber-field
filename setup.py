@@ -27,6 +27,7 @@ setup(
             'locale/*/LC_MESSAGES/*',
         ],
     },
+    use_2to3=True,
     zip_safe=False,
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -38,5 +39,5 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 3',
         'Topic :: Internet :: WWW/HTTP',
-    ],
+    ]
 )
