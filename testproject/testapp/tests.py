@@ -13,94 +13,68 @@ from django.db import IntegrityError
 from django.test import TestCase
 from django.utils.encoding import force_text
 
+from phonenumber_field.phonenumber import PhoneNumber, to_python
+from testapp import models
+
 
 class PhonenumberFieldAppTest(TestCase):
-    def test_to_python_country_id_parse(self):
-        from phonenumber_field.phonenumber import PhoneNumber, to_python
-        value = PhoneNumber.country_id_sep.join(['CH', '+41524242424'])
-        p = to_python(value)
-        self.assertEqual(p.country_id, 'CH')
 
-        p = to_python('+41524242424')
-        self.assertIsNone(p.country_id)
+    def test_to_python_country_id_parse(self):
+        value = PhoneNumber.country_id_sep.join(['CH', '+41524242424'])
+        self.assertEqual(to_python(value).country_id, 'CH')
+        self.assertIsNone(to_python('+41524242424').country_id)
 
     def test_save_field_to_database(self):
-        from testapp.models import TestModel
-        from phonenumber_field.phonenumber import PhoneNumber
-        tm = TestModel()
-        tm.phone = '+41 52 424 2424'
-        tm.full_clean()
-        tm.save()
-        pk = tm.id
-
-        tm = TestModel.objects.get(pk=pk)
-        self.assertIsInstance(tm.phone, PhoneNumber)
-        self.assertEqual(force_text(tm.phone), '+41524242424')
-        self.assertIsNone(tm.phone.country_id)
-
-        tm.phone = PhoneNumber.country_id_sep.join(['CH', force_text(tm.phone)])
-        tm.save()
-
-        tm = TestModel.objects.get(pk=pk)
-        self.assertEqual(tm.phone.country_id, 'CH')
+        instance = models.TestModel()
+        instance.phone = '+41 52 424 2424'
+        instance.full_clean()
+        instance.save()
+        instance = models.TestModel.objects.get(pk=instance.pk)
+        self.assertIsInstance(instance.phone, PhoneNumber)
+        self.assertEqual(force_text(instance.phone), '+41524242424')
+        self.assertIsNone(instance.phone.country_id)
+        instance.phone = PhoneNumber.country_id_sep.join(['CH', force_text(instance.phone)])
+        instance.save()
+        instance = models.TestModel.objects.get(pk=instance.pk)
+        self.assertEqual(instance.phone.country_id, 'CH')
 
     def test_save_blank_phone_to_database(self):
-        from testapp.models import TestModelBlankPhone
-        tm = TestModelBlankPhone()
-        tm.save()
-
-        pk = tm.id
-        tm = TestModelBlankPhone.objects.get(pk=pk)
-        self.assertIsNone(tm.phone)
+        instance = models.TestModelBlankPhone()
+        instance.save()
+        instance = models.TestModelBlankPhone.objects.get(pk=instance.pk)
+        self.assertIsNone(instance.phone)
 
 
 class CICharFieldTestModelTestCase(TestCase):
+
     def test_integrity_error(self):
-        from testapp.models import CICharFieldTestModel
-        self.assertEqual(CICharFieldTestModel.objects.count(), 0)
-
-        CICharFieldTestModel.objects.create(value='a')
-        self.assertEqual(CICharFieldTestModel.objects.count(), 1)
-
+        models.CICharFieldTestModel.objects.create(value='a')
+        self.assertEqual(models.CICharFieldTestModel.objects.count(), 1)
         with self.assertRaises(IntegrityError):
-            CICharFieldTestModel.objects.create(value='A')
+            models.CICharFieldTestModel.objects.create(value='A')
 
     def test_max_length(self):
-        from testapp.models import CICharFieldTestModel
-        obj = CICharFieldTestModel(value='bb')
+        instance = models.CICharFieldTestModel(value='bb')
         with self.assertRaises(ValidationError):
-            obj.full_clean()
+            instance.full_clean()
 
     def test_max_length_db(self):
-        from testapp.models import CICharFieldTestModel
-        self.assertEqual(CICharFieldTestModel.objects.count(), 0)
-
-        CICharFieldTestModel.objects.create(value='bb')
-        self.assertNotEqual(CICharFieldTestModel.objects.all()[0].value.lower(), 'bb')
+        models.CICharFieldTestModel.objects.create(value='bb')
+        self.assertNotEqual(models.CICharFieldTestModel.objects.all()[0].value.lower(), 'bb')
 
     def test_max_length_db_truncates(self):
-        from testapp.models import CICharFieldTestModel
-        self.assertEqual(CICharFieldTestModel.objects.count(), 0)
-
-        CICharFieldTestModel.objects.create(value='bb')
-        self.assertEqual(CICharFieldTestModel.objects.all()[0].value.lower(), 'b')
+        models.CICharFieldTestModel.objects.create(value='bb')
+        self.assertEqual(models.CICharFieldTestModel.objects.all()[0].value.lower(), 'b')
 
     def test_lookup(self):
-        from testapp.models import CICharFieldTestModel
-        self.assertEqual(CICharFieldTestModel.objects.count(), 0)
-
-        CICharFieldTestModel.objects.create(value='a')
-        self.assertEqual(CICharFieldTestModel.objects.count(), 1)
-
-        a = CICharFieldTestModel.objects.get(value='A')
+        models.CICharFieldTestModel.objects.create(value='a')
+        self.assertEqual(models.CICharFieldTestModel.objects.count(), 1)
+        a = models.CICharFieldTestModel.objects.get(value='A')
         self.assertEqual(a.value.upper(), 'A')
 
         a.delete()
-
-        self.assertEqual(CICharFieldTestModel.objects.count(), 0)
-
-        CICharFieldTestModel.objects.create(value='A')
-        self.assertEqual(CICharFieldTestModel.objects.count(), 1)
-
-        A = CICharFieldTestModel.objects.get(value='a')
+        self.assertEqual(models.CICharFieldTestModel.objects.count(), 0)
+        models.CICharFieldTestModel.objects.create(value='A')
+        self.assertEqual(models.CICharFieldTestModel.objects.count(), 1)
+        A = models.CICharFieldTestModel.objects.get(value='a')
         self.assertEqual(A.value.lower(), 'a')

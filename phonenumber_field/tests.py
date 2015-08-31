@@ -15,10 +15,12 @@ from phonenumber_field.validators import to_python
 ###############
 
 class MandatoryPhoneNumber(models.Model):
+
     phone_number = PhoneNumberField()
 
 
 class OptionalPhoneNumber(models.Model):
+
     phone_number = PhoneNumberField(blank=True, default='')
 
 
@@ -28,6 +30,7 @@ class OptionalPhoneNumber(models.Model):
 
 
 class PhoneNumberFieldTestCase(TestCase):
+
     test_number_1 = '+414204242'
     equal_number_strings = ['+44 113 8921113', '+441138921113']
     local_numbers = [
@@ -42,25 +45,18 @@ class PhoneNumberFieldTestCase(TestCase):
     invalid_numbers = ['+44 113 892111']
 
     def test_valid_numbers_are_valid(self):
-        numbers = [PhoneNumber.from_string(number_string)
-                   for number_string in self.equal_number_strings]
-        self.assertTrue(all([number.is_valid() for number in numbers]))
-        numbers = [PhoneNumber.from_string(number_string, region=region)
-                   for region, number_string in self.local_numbers]
-        self.assertTrue(all([number.is_valid() for number in numbers]))
+        numbers = (PhoneNumber.from_string(s) for s in self.equal_number_strings)
+        self.assertTrue(all(n.is_valid() for n in numbers))
+        numbers = (PhoneNumber.from_string(s, region=r) for r, s in self.local_numbers)
+        self.assertTrue(all(n.is_valid() for n in numbers))
 
     def test_invalid_numbers_are_invalid(self):
-        numbers = [PhoneNumber.from_string(number_string)
-                   for number_string in self.invalid_numbers]
-        self.assertTrue(all([not number.is_valid() for number in numbers]))
+        numbers = (PhoneNumber.from_string(s) for s in self.invalid_numbers)
+        self.assertTrue(all(not n.is_valid() for n in numbers))
 
     def test_objects_with_same_number_are_equal(self):
-        numbers = [
-            MandatoryPhoneNumber.objects.create(
-                phone_number=number_string).phone_number
-            for number_string in self.equal_number_strings]
-        self.assertTrue(all(is_number_match(n, numbers[0]) == MatchType.EXACT_MATCH
-                        for n in numbers))
+        numbers = (MandatoryPhoneNumber.objects.create(phone_number=s).phone_number for s in self.equal_number_strings)
+        self.assertTrue(all(is_number_match(n, numbers[0]) == MatchType.EXACT_MATCH for n in numbers))
 
     def test_field_returns_correct_type(self):
         model = OptionalPhoneNumber()
@@ -90,10 +86,8 @@ class PhoneNumberFieldTestCase(TestCase):
 
     def test_prep_value(self):
         """
-        Tests correct db storage value against different setting of
-        PHONENUMBER_DB_FORMAT.
-        Required output format is set as string constant to guarantee
-        consistent database storage values.
+        Tests correct db storage value against different setting of PHONENUMBER_DB_FORMAT.
+        Required output format is set as string constant to guarantee consistent database storage values.
         """
         number = PhoneNumberField()
         for phone_format in ('E164', 'RFC3966', 'INTERNATIONAL'):
