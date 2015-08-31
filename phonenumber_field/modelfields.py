@@ -35,7 +35,7 @@ class PhoneNumberDescriptor(object):
         return getattr(instance, self.field.name)
 
     def __set__(self, instance, value):
-        instance.__dict__[self.field.name] = instance.to_python(value)
+        setattr(instance, self.field.name, instance.to_python(value))
 
 
 class PhoneNumberField(models.Field):
@@ -47,7 +47,7 @@ class PhoneNumberField(models.Field):
 
     def __init__(self, *args, **kwargs):
         # 128 for longest phone number + 2 for country id + 1 for comma
-        kwargs['max_length'] = kwargs.get('max_length', 131)
+        kwargs.setdefault('max_length', 131)
         super(PhoneNumberField, self).__init__(*args, **kwargs)
         self.validators.append(validators.MaxLengthValidator(self.max_length))
 
