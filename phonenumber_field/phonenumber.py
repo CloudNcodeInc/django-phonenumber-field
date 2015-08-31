@@ -32,6 +32,9 @@ class PhoneNumber(phonenumbers.phonenumber.PhoneNumber):
                            keep_raw_input=True, numobj=phone_number_obj)
         return phone_number_obj
 
+    def __len__(self):
+        return len(self.__unicode__())
+
     def __unicode__(self):
         format_string = getattr(settings, 'PHONENUMBER_DEFAULT_FORMAT', 'E164')
         fmt = self.format_map[format_string]
@@ -64,9 +67,6 @@ class PhoneNumber(phonenumbers.phonenumber.PhoneNumber):
     @property
     def as_rfc3966(self):
         return self.format_as(phonenumbers.PhoneNumberFormat.RFC3966)
-
-    def __len__(self):
-        return len(self.__unicode__())
 
 
 def to_python(value):
