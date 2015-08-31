@@ -112,7 +112,7 @@ class PhoneNumberWidget(MultiWidget):
         return super(PhoneNumberWidget, self).render(*args, **kwargs)
 
     def format_output(self, rendered_widgets):
-        c = Context({
+        context = Context({
             'code': rendered_widgets[0],
             'code_id': '{0}_0'.format(self._base_id),
             'number': rendered_widgets[1],
@@ -120,8 +120,7 @@ class PhoneNumberWidget(MultiWidget):
             'extension': rendered_widgets[2],
             'extension_id': '{0}_2'.format(self._base_id)
         })
-        t = get_template(self.template_name)
-        return t.render(c)
+        return get_template(self.template_name).render(context)
 
     @property
     def country_code_widget(self):
