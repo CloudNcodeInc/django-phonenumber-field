@@ -16,5 +16,5 @@ class TestModelBlankPhone(models.Model):
     phone = modelfields.PhoneNumberField(blank=True)
 
 
-class LowerCaseCharFieldTestModel(models.Model):
-    value = modelfields.LowerCaseCharField(primary_key=True, max_length=1)
+class UpperCaseCharFieldTestModel(models.Model):
+    value = modelfields.UpperCaseCharField(primary_key=True, max_length=1)

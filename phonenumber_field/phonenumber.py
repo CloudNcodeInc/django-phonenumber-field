@@ -6,6 +6,7 @@ import phonenumbers
 from django.conf import settings
 from django.core import validators
 from django.utils.encoding import force_text, python_2_unicode_compatible
+from django.utils.six import string_types
 from phonenumbers.phonenumberutil import NumberParseException
 
 

@@ -14,7 +14,7 @@ class Country(models.Model):
     class Meta:
         verbose_name_plural = 'Countries'
 
-    id = modelfields.LowerCaseCharField(primary_key=True, max_length=2)
+    id = modelfields.UpperCaseCharField(primary_key=True, max_length=2)
     name = models.CharField(max_length=50)
     active = models.BooleanField(default=False)
 

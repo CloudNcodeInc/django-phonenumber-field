@@ -2,13 +2,13 @@
 
 from __future__ import unicode_literals
 
+import phonenumbers
 from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand
 from django.utils.encoding import force_text
 from django_countries.data import COUNTRIES
-from phonenumbers.data import _COUNTRY_CODE_TO_REGION_CODE
 
-from ...models import Country, Code, CountryCode
+from ... import models
 
 
 class Command(BaseCommand):
@@ -20,7 +20,7 @@ class Command(BaseCommand):
         self.stdout.write('Building a list of countries currently stored in the database.')
 
         old_dict = {}
-        for country in Country.objects.all():
+        for country in models.Country.objects.all():
             old_dict[country.id] = {'name': country.name, 'active': country.active}
 
         #
@@ -58,7 +58,7 @@ class Command(BaseCommand):
         self.stdout.write('Committing changes to database.')
 
         # deactivate removed countries
-        deactivated_country_count = Country.objects.filter(id__in=removed_keys, active=True).update(active=False)
+        deactivated_country_count = models.Country.objects.filter(id__in=removed_keys, active=True).update(active=False)
 
         # adjust unchanged_count
         unchanged_count += removed_count - deactivated_country_count
@@ -71,7 +71,7 @@ class Command(BaseCommand):
                 'name': new_dict[key]['name'],
                 'active': True
             }
-            country = Country(**fields)
+            country = models.Country(**fields)
 
             try:
                 country.full_clean()
@@ -90,7 +90,7 @@ class Command(BaseCommand):
         # change existing keys
         failed_to_change = []
         for key in changed_keys:
-            country = Country.objects.get(id=key)
+            country = models.Country.objects.get(id=key)
             country.name = new_dict[key]['name']
             country.active = True
 
@@ -120,13 +120,13 @@ class Command(BaseCommand):
         self.stdout.write('------ COUNTRIES SUMMARY ------')
         self.stdout.write('-------------------------------')
         self.stdout.write('-------------------------------')
-        self.stdout.write('There are %d records total.' % len(old_dict))
-        self.stdout.write('Deactivated shipping to %d countries.' % deactivated_country_count)
-        self.stdout.write('Added %d countries.' % (len(added_keys) - len(failed_to_add)))
-        self.stdout.write('Failed to add %d countries.' % len(failed_to_add))
-        self.stdout.write('Changed %d countries.' % (len(changed_keys) - len(failed_to_change)))
-        self.stdout.write('Failed to change %d countries.' % len(failed_to_change))
-        self.stdout.write('%d countries are unchanged.' % (unchanged_count + len(failed_to_change)))
+        self.stdout.write('There are {0} records total.'.format(len(old_dict)))
+        self.stdout.write('Deactivated shipping to {0} countries.'.format(deactivated_country_count))
+        self.stdout.write('Added {0} countries.'.format(len(added_keys) - len(failed_to_add)))
+        self.stdout.write('Failed to add {0} countries.'.format(len(failed_to_add)))
+        self.stdout.write('Changed {0} countries.'.format(len(changed_keys) - len(failed_to_change)))
+        self.stdout.write('Failed to change {0} countries.'.format(len(failed_to_change)))
+        self.stdout.write('{0} countries are unchanged.'.format(unchanged_count + len(failed_to_change)))
         self.stdout.write('')
 
         #
@@ -139,7 +139,7 @@ class Command(BaseCommand):
         failed_to_add_country_code = []
         added_code = 0
         added_country_code = 0
-        for calling_code, country_codes in _COUNTRY_CODE_TO_REGION_CODE.iteritems():
+        for calling_code, country_codes in phonenumbers.COUNTRY_CODE_TO_REGION_CODE.iteritems():
             for country_code in country_codes:
                 if country_code not in country_calling_codes:
                     country_calling_codes[country_code] = []
@@ -147,15 +147,15 @@ class Command(BaseCommand):
 
         for country_code, calling_codes in country_calling_codes.iteritems():
             try:
-                country = Country.objects.get(id=country_code)
-            except Country.DoesNotExist:
+                country = models.Country.objects.get(id=country_code)
+            except models.Country.DoesNotExist:
                 country = None
 
             for calling_code in calling_codes:
                 try:
-                    code = Code.objects.get(id=calling_code)
-                except Code.DoesNotExist:
-                    code = Code()
+                    code = models.Code.objects.get(id=calling_code)
+                except models.Code.DoesNotExist:
+                    code = models.Code()
                     code.id = calling_code
                     code.active = True
 
@@ -173,9 +173,9 @@ class Command(BaseCommand):
 
                 if country:
                     try:
-                        country_code = CountryCode.objects.get(country=country, code=code)
-                    except CountryCode.DoesNotExist:
-                        country_code = CountryCode(country=country, code=code, active=True)
+                        country_code = models.CountryCode.objects.get(country=country, code=code)
+                    except models.CountryCode.DoesNotExist:
+                        country_code = models.CountryCode(country=country, code=code, active=True)
 
                         try:
                             country_code.full_clean()
@@ -208,8 +208,8 @@ class Command(BaseCommand):
         self.stdout.write('------ CODES SUMMARY ------')
         self.stdout.write('---------------------------')
         self.stdout.write('---------------------------')
-        self.stdout.write('Added %d codes.' % added_code)
-        self.stdout.write('Failed to add %d codes.' % len(failed_to_add_code))
-        self.stdout.write('Added %d country codes.' % added_country_code)
-        self.stdout.write('Failed to add %d country codes.' % len(failed_to_add_country_code))
+        self.stdout.write('Added {0} codes.'.format(added_code))
+        self.stdout.write('Failed to add {0} codes.'.format(len(failed_to_add_code)))
+        self.stdout.write('Added {0} country codes.'.format(added_country_code))
+        self.stdout.write('Failed to add {0} country codes.'.format(len(failed_to_add_country_code)))
         self.stdout.write('')

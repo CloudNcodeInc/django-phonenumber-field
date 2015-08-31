@@ -12,17 +12,17 @@ from django.utils.translation import ugettext_lazy as _
 from . import formfields, phonenumber, validators
 
 
-class LowerCaseCharField(models.CharField):
+class UpperCaseCharField(models.CharField):
 
     def get_prep_value(self, value):
         """Return data in a format that has been prepared for use as a parameter in a query."""
-        value = super(LowerCaseCharField, self).get_prep_value(value)
-        return value.lower() if value else value
+        value = super(UpperCaseCharField, self).get_prep_value(value)
+        return value.upper() if value else value
 
     def pre_save(self, model_instance, add):
         value = getattr(model_instance, self.attname)
         if value:
-            value = value.lower()
+            value = value.upper()
         setattr(model_instance, self.attname, value)
         return value
 

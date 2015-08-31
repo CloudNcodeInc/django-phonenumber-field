@@ -45,36 +45,36 @@ class PhonenumberFieldAppTest(TestCase):
         self.assertIsNone(instance.phone)
 
 
-class LowerCaseCharFieldTestModelTestCase(TestCase):
+class UpperCaseCharFieldTestModelTestCase(TestCase):
 
     def test_integrity_error(self):
-        models.LowerCaseCharFieldTestModel.objects.create(value='a')
-        self.assertEqual(models.LowerCaseCharFieldTestModel.objects.count(), 1)
+        models.UpperCaseCharFieldTestModel.objects.create(value='a')
+        self.assertEqual(models.UpperCaseCharFieldTestModel.objects.count(), 1)
         with self.assertRaises(IntegrityError):
-            models.LowerCaseCharFieldTestModel.objects.create(value='A')
+            models.UpperCaseCharFieldTestModel.objects.create(value='A')
 
     def test_max_length(self):
-        instance = models.LowerCaseCharFieldTestModel(value='bb')
+        instance = models.UpperCaseCharFieldTestModel(value='bb')
         with self.assertRaises(ValidationError):
             instance.full_clean()
 
     def test_max_length_db(self):
-        models.LowerCaseCharFieldTestModel.objects.create(value='bb')
-        self.assertNotEqual(models.LowerCaseCharFieldTestModel.objects.all()[0].value.lower(), 'bb')
+        models.UpperCaseCharFieldTestModel.objects.create(value='bb')
+        self.assertNotEqual(models.UpperCaseCharFieldTestModel.objects.all()[0].value.Upper(), 'bb')
 
     def test_max_length_db_truncates(self):
-        models.LowerCaseCharFieldTestModel.objects.create(value='bb')
-        self.assertEqual(models.LowerCaseCharFieldTestModel.objects.all()[0].value.lower(), 'b')
+        models.UpperCaseCharFieldTestModel.objects.create(value='bb')
+        self.assertEqual(models.UpperCaseCharFieldTestModel.objects.all()[0].value.Upper(), 'b')
 
     def test_create_and_lookup_convert_case(self):
-        models.LowerCaseCharFieldTestModel.objects.create(value='a')
-        self.assertEqual(models.LowerCaseCharFieldTestModel.objects.count(), 1)
-        A = models.LowerCaseCharFieldTestModel.objects.get(value='A')
-        self.assertEqual(A.value, 'a')
+        models.UpperCaseCharFieldTestModel.objects.create(value='A')
+        self.assertEqual(models.UpperCaseCharFieldTestModel.objects.count(), 1)
+        a = models.UpperCaseCharFieldTestModel.objects.get(value='a')
+        self.assertEqual(a.value, 'A')
 
     def test_create_convert_case_and_lookup(self):
-        a = models.LowerCaseCharFieldTestModel.objects.create(value='A')
-        self.assertEqual(a.value, 'a')
-        self.assertEqual(models.LowerCaseCharFieldTestModel.objects.count(), 1)
-        A = models.LowerCaseCharFieldTestModel.objects.get(value='a')
-        self.assertEqual(A.value, 'a')
+        a = models.UpperCaseCharFieldTestModel.objects.create(value='a')
+        self.assertEqual(a.value, 'A')
+        self.assertEqual(models.UpperCaseCharFieldTestModel.objects.count(), 1)
+        a = models.UpperCaseCharFieldTestModel.objects.get(value='a')
+        self.assertEqual(a.value, 'A')

@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Country',
             fields=[
-                ('id', phonenumber_field.modelfields.LowerCaseCharField(serialize=False, primary_key=True, max_length=2)),
+                ('id', phonenumber_field.modelfields.UpperCaseCharField(serialize=False, primary_key=True, max_length=2)),
                 ('name', models.CharField(max_length=50)),
                 ('active', models.BooleanField(default=False)),
             ],
