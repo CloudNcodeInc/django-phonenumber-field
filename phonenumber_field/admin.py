@@ -5,14 +5,14 @@ from __future__ import unicode_literals
 from django.contrib import admin
 from django.utils.encoding import force_text
 
-from .models import Country, Code, CountryCode
+from . import models
 
 
 class CountryCodeInline(admin.TabularInline):
-    model = CountryCode
+    model = models.CountryCode
 
 
-@admin.register(Country)
+@admin.register(models.Country)
 class CountryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'active', 'codes')
     inlines = (CountryCodeInline, )
@@ -24,7 +24,7 @@ class CountryAdmin(admin.ModelAdmin):
         return ', '.join([force_text(i) for i in ids])
 
 
-@admin.register(Code)
+@admin.register(models.Code)
 class CodeAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'active', 'countries')
     inlines = (CountryCodeInline, )
@@ -36,7 +36,7 @@ class CodeAdmin(admin.ModelAdmin):
         return ', '.join(names)
 
 
-@admin.register(CountryCode)
+@admin.register(models.CountryCode)
 class CountryCodeAdmin(admin.ModelAdmin):
     list_display = (
         'get_country_id', 'get_country_name', 'get_code_id', 'get_country_active', 'get_code_active', 'active',

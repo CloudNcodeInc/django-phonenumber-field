@@ -8,8 +8,6 @@ from django.template import Context
 from django.template.loader import get_template
 from django.utils.encoding import force_text
 
-from .models import CountryCode
-
 COUNTRY_CODE_CHOICE_SEP = ','
 
 
@@ -22,23 +20,26 @@ def country_code_to_display(country_code):
 
 
 def country_code_from_choice(choice):
+    from . import models
     country_id, code_id = [v.strip() for v in choice.split(COUNTRY_CODE_CHOICE_SEP)]
-    return CountryCode.objects.get(country__id=country_id, code__id=code_id)
+    return models.CountryCode.objects.get(country__id=country_id, code__id=code_id)
 
 
 class CountryCodeSelect(Select):
     initial = None
 
     def __init__(self, phone_widget):
+        from . import models
         self.phone_widget = phone_widget
         choices = [('', '---------')]
-        country_codes = CountryCode.objects.filter(active=True, country__active=True, code__active=True)
+        country_codes = models.CountryCode.objects.filter(active=True, country__active=True, code__active=True)
         for country_code in country_codes:
             choices.append((country_code_to_choice(country_code), country_code_to_display(country_code)))
         return super(CountryCodeSelect, self).__init__(choices=choices)
 
     def render(self, name, value, *args, **kwargs):
-        if isinstance(value, CountryCode):
+        from . import models
+        if isinstance(value, models.CountryCode):
             value = country_code_to_choice(value)
         if value == self.phone_widget.empty_country_code:
             value = ''
@@ -46,12 +47,13 @@ class CountryCodeSelect(Select):
 
     def value_from_datadict(self, *args, **kwargs):
         """Returns a country code model instance."""
+        from . import models
         code = None
         choice = super(CountryCodeSelect, self).value_from_datadict(*args, **kwargs)
         if choice:
             try:
                 code = country_code_from_choice(choice)
-            except (CountryCode.DoesNotExist, ValueError):
+            except (models.CountryCode.DoesNotExist, ValueError):
                 pass
         return code
 
