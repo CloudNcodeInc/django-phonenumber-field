@@ -2,9 +2,8 @@
 
 from __future__ import unicode_literals
 
-from django.conf import settings
 from django.db import models
-from django.test.testcases import TestCase
+from django.test import override_settings, TestCase
 from phonenumbers import is_number_match, MatchType
 from phonenumber_field.modelfields import PhoneNumberField
 from phonenumber_field.phonenumber import PhoneNumber
@@ -81,20 +80,13 @@ class PhoneNumberFieldTestCase(TestCase):
         phone = to_python(42)
         self.assertIsNone(phone)
 
-    def _test_storage_formats(self):
-        """Aggregate of tests to perform for db storage formats."""
-        self.test_objects_with_same_number_are_equal()
-        self.test_field_returns_correct_type()
-        self.test_can_assign_string_phone_number()
-
     def test_storage_formats(self):
         """Perform aggregate tests for all db storage formats."""
-        # FIXME use override_settings
-        old_format = getattr(settings, 'PHONENUMBER_DB_FORMAT', 'E164')
-        for frmt in PhoneNumber.format_map:
-            setattr(settings, 'PHONENUMBER_DB_FORMAT', frmt)
-            self._test_storage_formats()
-        setattr(settings, 'PHONENUMBER_DB_FORMAT', old_format)
+        for phone_format in PhoneNumber.format_map:
+            with override_settings(PHONENUMBER_DB_FORMAT=phone_format):
+                self.test_objects_with_same_number_are_equal()
+                self.test_field_returns_correct_type()
+                self.test_can_assign_string_phone_number()
 
     def test_prep_value(self):
         """
@@ -103,14 +95,10 @@ class PhoneNumberFieldTestCase(TestCase):
         Required output format is set as string constant to guarantee
         consistent database storage values.
         """
-        # FIXME use override_settings
         number = PhoneNumberField()
-        old_format = getattr(settings, 'PHONENUMBER_DB_FORMAT', 'E164')
-        for frmt in ['E164', 'RFC3966', 'INTERNATIONAL']:
-            setattr(settings, 'PHONENUMBER_DB_FORMAT', frmt)
-            self.assertEqual(
-                number.get_prep_value(
-                    to_python(self.storage_numbers[frmt][0])
-                ),
-                self.storage_numbers[frmt][1])
-        setattr(settings, 'PHONENUMBER_DB_FORMAT', old_format)
+        for phone_format in ('E164', 'RFC3966', 'INTERNATIONAL'):
+            with override_settings(PHONENUMBER_DB_FORMAT=phone_format):
+                self.assertEqual(
+                    number.get_prep_value(to_python(self.storage_numbers[phone_format][0])),
+                    self.storage_numbers[phone_format][1], msg=phone_format
+                )
