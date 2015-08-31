@@ -14,7 +14,7 @@ from django.test import TestCase
 from django.utils.encoding import force_text
 
 
-class PhonenumerFieldAppTest(TestCase):
+class PhonenumberFieldAppTest(TestCase):
     def test_to_python_country_id_parse(self):
         from phonenumber_field.phonenumber import PhoneNumber, to_python
         value = PhoneNumber.country_id_sep.join(['CH', '+41524242424'])
