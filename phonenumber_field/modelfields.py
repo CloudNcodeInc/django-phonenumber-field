@@ -12,6 +12,21 @@ from phonenumber_field.validators import validate_international_phonenumber
 from phonenumber_field.phonenumber import PhoneNumber, to_python, string_types
 
 
+class LowerCaseCharField(models.CharField):
+
+    def get_prep_value(self, value):
+        """Return data in a format that has been prepared for use as a parameter in a query."""
+        value = super(LowerCaseCharField, self).get_prep_value(value)
+        return value.lower() if value else value
+
+    def pre_save(self, model_instance, add):
+        value = getattr(model_instance, self.attname)
+        if value:
+            value = value.lower()
+        setattr(model_instance, self.attname, value)
+        return value
+
+
 class PhoneNumberDescriptor(object):
     """
     The descriptor for the phone number attribute on the model instance.

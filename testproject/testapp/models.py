@@ -3,19 +3,18 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from phonenumber_field.fields.models.caseinsensitivecharfield import CaseInsensitiveCharField
-from phonenumber_field.modelfields import PhoneNumberField
+from phonenumber_field import modelfields
 
 
 class TestModel(models.Model):
     name = models.CharField(max_length=255, blank=True, default='')
-    phone = PhoneNumberField()
+    phone = modelfields.PhoneNumberField()
 
 
 class TestModelBlankPhone(models.Model):
     name = models.CharField(max_length=255, blank=True, default='')
-    phone = PhoneNumberField(blank=True)
+    phone = modelfields.PhoneNumberField(blank=True)
 
 
-class CICharFieldTestModel(models.Model):
-    value = CaseInsensitiveCharField(primary_key=True, max_length=1)
+class LowerCaseCharFieldTestModel(models.Model):
+    value = modelfields.LowerCaseCharField(primary_key=True, max_length=1)

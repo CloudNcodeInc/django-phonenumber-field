@@ -1,11 +1,9 @@
-# -*- encoding: utf-8 -*-
-
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-
-import django.core.validators
-import phonenumber_field.fields.models.caseinsensitivecharfield
 from django.db import models, migrations
+import django.core.validators
+import phonenumber_field.modelfields
 
 
 class Migration(migrations.Migration):
@@ -17,17 +15,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Code',
             fields=[
-                ('id', models.PositiveSmallIntegerField(serialize=False, primary_key=True, validators=[django.core.validators.MinValueValidator(1)])),
+                ('id', models.PositiveSmallIntegerField(validators=[django.core.validators.MinValueValidator(1)], serialize=False, primary_key=True)),
                 ('active', models.BooleanField(default=False)),
             ],
             options={
-                'ordering': ('id', ),
+                'ordering': ('id',),
             },
         ),
         migrations.CreateModel(
             name='Country',
             fields=[
-                ('id', phonenumber_field.fields.models.caseinsensitivecharfield.CaseInsensitiveCharField(max_length=2, serialize=False, primary_key=True)),
+                ('id', phonenumber_field.modelfields.LowerCaseCharField(serialize=False, primary_key=True, max_length=2)),
                 ('name', models.CharField(max_length=50)),
                 ('active', models.BooleanField(default=False)),
             ],
@@ -38,7 +36,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CountryCode',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
                 ('active', models.BooleanField(default=False)),
                 ('code', models.ForeignKey(related_name='country_codes', to='phonenumber_field.Code')),
                 ('country', models.ForeignKey(related_name='country_codes', to='phonenumber_field.Country')),

@@ -6,7 +6,7 @@ from django.core import validators
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
-from .fields.models.caseinsensitivecharfield import CaseInsensitiveCharField
+from . import modelfields
 
 
 @python_2_unicode_compatible
@@ -14,7 +14,7 @@ class Country(models.Model):
     class Meta:
         verbose_name_plural = 'Countries'
 
-    id = CaseInsensitiveCharField(primary_key=True, max_length=2)
+    id = modelfields.LowerCaseCharField(primary_key=True, max_length=2)
     name = models.CharField(max_length=50)
     active = models.BooleanField(default=False)
 
