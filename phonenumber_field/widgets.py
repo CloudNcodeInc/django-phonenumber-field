@@ -7,6 +7,7 @@ from django.forms.widgets import MultiWidget
 from django.template import Context
 from django.template.loader import get_template
 from django.utils.encoding import force_text
+from django.utils.html import mark_safe
 
 COUNTRY_CODE_CHOICE_SEP = ','
 
@@ -124,7 +125,7 @@ class PhoneNumberWidget(MultiWidget):
             'code_id': '{0}_0'.format(self._base_id),
             'number': rendered_widgets[1],
             'number_id': '{0}_1'.format(self._base_id),
-            'extension': rendered_widgets[2].replace('required="required"', ''),  # Make extension optional
+            'extension': mark_safe(rendered_widgets[2].replace('required="required"', '')),  # Make extension optional
             'extension_id': '{0}_2'.format(self._base_id)
         })
         return get_template(self.template_name).render(context)
