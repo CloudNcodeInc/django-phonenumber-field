@@ -79,7 +79,7 @@ class PhoneNumberFieldTestCase(TestCase):
         # testcase for
         # https://github.com/stefanfoulis/django-phonenumber-field/issues/11
         phone = to_python(42)
-        self.asserIsNone(phone)
+        self.assertIsNone(phone)
 
     def _test_storage_formats(self):
         """Aggregate of tests to perform for db storage formats."""
