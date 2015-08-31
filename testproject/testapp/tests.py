@@ -31,10 +31,10 @@ class PhonenumerFieldAppTest(TestCase):
 
         tm = TestModel.objects.get(pk=pk)
         self.assertIsInstance(tm.phone, PhoneNumber)
-        self.assertEqual(str(tm.phone), '+41524242424')
+        self.assertEqual(unicode(tm.phone), '+41524242424')
         self.assertIsNone(tm.phone.country_id)
 
-        tm.phone = PhoneNumber.country_id_sep.join(['CH', str(tm.phone)])
+        tm.phone = PhoneNumber.country_id_sep.join(['CH', unicode(tm.phone)])
         tm.save()
 
         tm = TestModel.objects.get(pk=pk)
