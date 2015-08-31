@@ -124,7 +124,7 @@ class PhoneNumberWidget(MultiWidget):
             'code_id': '{0}_0'.format(self._base_id),
             'number': rendered_widgets[1],
             'number_id': '{0}_1'.format(self._base_id),
-            'extension': rendered_widgets[2],
+            'extension': rendered_widgets[2].replace('required="required"', ''),  # Make extension optional
             'extension_id': '{0}_2'.format(self._base_id)
         })
         return get_template(self.template_name).render(context)
