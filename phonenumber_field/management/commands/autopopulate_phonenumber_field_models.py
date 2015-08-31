@@ -75,7 +75,7 @@ class Command(BaseCommand):
 
             try:
                 country.full_clean()
-            except ValidationError, e:
+            except ValidationError as e:
                 failed_to_add.append([fields, e])
             else:
                 country.save()
@@ -96,7 +96,7 @@ class Command(BaseCommand):
 
             try:
                 country.full_clean()
-            except ValidationError, e:
+            except ValidationError as e:
                 d = {}
                 for k in ('id', 'name', 'active'):
                     d[k] = getattr(country, k)
@@ -161,7 +161,7 @@ class Command(BaseCommand):
 
                     try:
                         code.full_clean()
-                    except ValidationError, e:
+                    except ValidationError as e:
                         d = {}
                         for k in ('id', 'active'):
                             d[k] = getattr(code, k)
@@ -179,7 +179,7 @@ class Command(BaseCommand):
 
                         try:
                             country_code.full_clean()
-                        except ValidationError, e:
+                        except ValidationError as e:
                             d = {}
                             for k in ('country', 'code', 'active'):
                                 d[k] = getattr(country_code, k)
