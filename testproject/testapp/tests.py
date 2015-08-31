@@ -30,7 +30,7 @@ class PhonenumerFieldAppTest(TestCase):
         pk = tm.id
 
         tm = TestModel.objects.get(pk=pk)
-        self.assertTrue(isinstance(tm.phone, PhoneNumber))
+        self.assertIsInstance(tm.phone, PhoneNumber)
         self.assertEqual(str(tm.phone), '+41524242424')
         self.assertIsNone(tm.phone.country_id)
 
