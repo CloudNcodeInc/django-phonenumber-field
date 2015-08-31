@@ -29,7 +29,7 @@ class Command(BaseCommand):
         self.stdout.write('Building a list of countries for comparison.')
 
         new_dict = {}
-        for country_id, country_name in COUNTRIES.iteritems():
+        for country_id, country_name in COUNTRIES.items():
             if country_id in new_dict:
                 continue
             new_dict[country_id] = {'name': country_name[:50], 'active': True}
@@ -139,13 +139,13 @@ class Command(BaseCommand):
         failed_to_add_country_code = []
         added_code = 0
         added_country_code = 0
-        for calling_code, country_codes in phonenumbers.COUNTRY_CODE_TO_REGION_CODE.iteritems():
+        for calling_code, country_codes in phonenumbers.COUNTRY_CODE_TO_REGION_CODE.items():
             for country_code in country_codes:
                 if country_code not in country_calling_codes:
                     country_calling_codes[country_code] = []
                 country_calling_codes[country_code].append(calling_code)
 
-        for country_code, calling_codes in country_calling_codes.iteritems():
+        for country_code, calling_codes in country_calling_codes.items():
             try:
                 country = models.Country.objects.get(id=country_code)
             except models.Country.DoesNotExist:
