@@ -9,21 +9,15 @@ from django.template.loader import get_template
 from django.utils.encoding import force_text
 from django.utils.html import mark_safe
 
+from . import phonenumber
+# FIXME maybe update modelfields module to not import formfields at module level and import models here
+
 COUNTRY_CODE_CHOICE_SEP = ','
 
 
 def country_code_to_choice(country_code):
+    # FIXME add this to the Countrycode model
     return '{0.country.id}{1}{0.code.id}'.format(country_code, COUNTRY_CODE_CHOICE_SEP)
-
-
-def country_code_to_display(country_code):
-    return force_text(country_code)
-
-
-def country_code_from_choice(choice):
-    from . import models
-    country_id, code_id = [v.strip() for v in choice.split(COUNTRY_CODE_CHOICE_SEP)]
-    return models.CountryCode.objects.get(country__id=country_id, code__id=code_id)
 
 
 class CountryCodeSelect(Select):
@@ -35,28 +29,25 @@ class CountryCodeSelect(Select):
         choices = [('', '---------')]
         country_codes = models.CountryCode.objects.filter(active=True, country__active=True, code__active=True)
         for country_code in country_codes:
-            choices.append((country_code_to_choice(country_code), country_code_to_display(country_code)))
+            choices.append((country_code_to_choice(country_code), force_text(country_code)))
         return super(CountryCodeSelect, self).__init__(choices=choices)
 
     def render(self, name, value, *args, **kwargs):
         from . import models
         if isinstance(value, models.CountryCode):
             value = country_code_to_choice(value)
-        if value == self.phone_widget.empty_country_code:
-            value = ''
         return super(CountryCodeSelect, self).render(name, value, *args, **kwargs)
 
     def value_from_datadict(self, *args, **kwargs):
         """Returns a country code model instance."""
         from . import models
-        code = None
         choice = super(CountryCodeSelect, self).value_from_datadict(*args, **kwargs)
         if choice:
             try:
-                code = country_code_from_choice(choice)
+                country_id, code_id = [v.strip() for v in choice.split(COUNTRY_CODE_CHOICE_SEP)]
+                return models.CountryCode.objects.get(country__id=country_id, code__id=code_id)
             except (models.CountryCode.DoesNotExist, ValueError):
-                pass
-        return code
+                return None
 
 
 class PhoneNumberWidget(MultiWidget):
@@ -82,35 +73,27 @@ class PhoneNumberWidget(MultiWidget):
             widget.id_for_label = f(i)
 
         super(PhoneNumberWidget, self).__init__(widgets, attrs)
-        self._empty_country_code = [None]
         self._base_id = ''
-        self.country_code = None
-        self.national_number = None
-        self.extension = None
-
-    @property
-    def empty_country_code(self):
-        return self._empty_country_code[0]
-
-    @empty_country_code.setter
-    def empty_country_code(self, value):
-        self._empty_country_code[0] = value
 
     def decompress(self, value):
-        return [self.country_code, self.national_number, self.extension]
+        value = phonenumber.to_python(value)
+        if not value:
+            return [None]*3
+        from . import models
+        try:
+            # FIXME correctly restore the country_code based on previous value in case of invalid form
+            country_code = models.CountryCode.objects.filter(code=value.country_code).first()
+        except ValueError:
+            country_code = None
+        return [country_code_to_choice(country_code) if country_code else None, value.national_number, value.extension]
 
     def value_from_datadict(self, data, files, name):
         country_code, national_number, extension = super(PhoneNumberWidget, self).value_from_datadict(data, files, name)
         country_id = ''
-        if country_code or (self.empty_country_code and national_number):
-            if country_code:
-                self.country_code = country_code
-                country_id = '{0.country.id},'.format(country_code)
-            country_code = '+{0}-'.format(country_code.code.id or self.empty_country_code)
-        if national_number:
-            self.national_number = national_number
+        if country_code:
+            country_id = '{0.country.id},'.format(country_code)
+            country_code = '+{0}-'.format(country_code.code.id)
         if extension:
-            self.extension = extension
             extension = 'x{0}'.format(extension)
         return '{0}{1}{2}{3}'.format(country_id, country_code, national_number, extension or '')
 
@@ -129,15 +112,3 @@ class PhoneNumberWidget(MultiWidget):
             'extension_id': '{0}_2'.format(self._base_id)
         })
         return get_template(self.template_name).render(context)
-
-    @property
-    def country_code_widget(self):
-        return self.widgets[0]
-
-    @property
-    def national_number_widget(self):
-        return self.widgets[1]
-
-    @property
-    def extension_widget(self):
-        return self.widgets[2]
