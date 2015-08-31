@@ -48,17 +48,17 @@ class PhoneNumberFieldTestCase(TestCase):
     invalid_numbers = ['+44 113 892111']
 
     def test_valid_numbers_are_valid(self):
-        numbers = (phonenumber.PhoneNumber.from_string(s) for s in self.equal_number_strings)
+        numbers = [phonenumber.PhoneNumber.from_string(s) for s in self.equal_number_strings]
         self.assertTrue(all(n.is_valid() for n in numbers))
-        numbers = (phonenumber.PhoneNumber.from_string(s, region=r) for r, s in self.local_numbers)
+        numbers = [phonenumber.PhoneNumber.from_string(s, region=r) for r, s in self.local_numbers]
         self.assertTrue(all(n.is_valid() for n in numbers))
 
     def test_invalid_numbers_are_invalid(self):
-        numbers = (phonenumber.PhoneNumber.from_string(s) for s in self.invalid_numbers)
+        numbers = [phonenumber.PhoneNumber.from_string(s) for s in self.invalid_numbers]
         self.assertTrue(all(not n.is_valid() for n in numbers))
 
     def test_objects_with_same_number_are_equal(self):
-        numbers = (MandatoryPhoneNumber.objects.create(phone_number=s).phone_number for s in self.equal_number_strings)
+        numbers = [MandatoryPhoneNumber.objects.create(phone_number=s).phone_number for s in self.equal_number_strings]
         self.assertTrue(
             all(phonenumbers.is_number_match(n, numbers[0]) == phonenumbers.MatchType.EXACT_MATCH for n in numbers)
         )
@@ -94,7 +94,7 @@ class PhoneNumberFieldTestCase(TestCase):
         Tests correct db storage value against different setting of PHONENUMBER_DB_FORMAT.
         Required output format is set as string constant to guarantee consistent database storage values.
         """
-        number = phonenumber.PhoneNumberField()
+        number = modelfields.PhoneNumberField()
         for phone_format in ('E164', 'RFC3966', 'INTERNATIONAL'):
             with override_settings(PHONENUMBER_DB_FORMAT=phone_format):
                 self.assertEqual(
