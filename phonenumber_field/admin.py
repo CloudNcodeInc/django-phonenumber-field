@@ -1,4 +1,10 @@
+# -*- encoding: utf-8 -*-
+
+from __future__ import unicode_literals
+
 from django.contrib import admin
+from django.utils.encoding import force_text
+
 from .models import Country, Code, CountryCode
 
 
@@ -15,19 +21,19 @@ class CountryAdmin(admin.ModelAdmin):
     def codes(self, country):
         ids = list(country.country_codes.values_list('code__id', flat=True).distinct())
         ids.sort()
-        return unicode(', ').join([unicode(i) for i in ids])
+        return ', '.join([force_text(i) for i in ids])
 
 
 @admin.register(Code)
 class CodeAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'active', 'countries')
+    list_display = ('__str__', 'active', 'countries')
     inlines = (CountryCodeInline, )
     extra = 0
 
     def countries(self, code):
         names = list(code.country_codes.values_list('country__name', flat=True).distinct())
         names.sort()
-        return unicode(', ').join(names)
+        return ', '.join(names)
 
 
 @admin.register(CountryCode)

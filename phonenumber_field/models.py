@@ -1,9 +1,15 @@
-#-*- coding: utf-8 -*-
-from django.db import models
+# -*- encoding: utf-8 -*-
+
+from __future__ import unicode_literals
+
 from django.core import validators
+from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
+
 from .fields.models.caseinsensitivecharfield import CaseInsensitiveCharField
 
 
+@python_2_unicode_compatible
 class Country(models.Model):
     class Meta:
         verbose_name_plural = 'Countries'
@@ -12,10 +18,11 @@ class Country(models.Model):
     name = models.CharField(max_length=50)
     active = models.BooleanField(default=False)
 
-    def __unicode__(self):
-        return unicode('{0.name} ({0.id})').format(self)
+    def __str__(self):
+        return '{0.name} ({0.id})'.format(self)
 
 
+@python_2_unicode_compatible
 class Code(models.Model):
     class Meta:
         ordering = ('id', )
@@ -23,8 +30,8 @@ class Code(models.Model):
     id = models.PositiveSmallIntegerField(primary_key=True, validators=[validators.MinValueValidator(1)])
     active = models.BooleanField(default=False)
 
-    def __unicode__(self):
-        return unicode(self.id)
+    def __str__(self):
+        return '{0.id}'.format(self)
 
 
 class CountryCodeManager(models.Manager):
@@ -32,6 +39,7 @@ class CountryCodeManager(models.Manager):
         return self.get(country=country, code=code)
 
 
+@python_2_unicode_compatible
 class CountryCode(models.Model):
     class Meta:
         unique_together = ('country', 'code')
@@ -43,5 +51,5 @@ class CountryCode(models.Model):
     code = models.ForeignKey(Code, related_name='country_codes')
     active = models.BooleanField(default=False)
 
-    def __unicode__(self):
-        return unicode('{0.country}, +{0.code}').format(self)
+    def __str__(self):
+        return '{0.country}, +{0.code}'.format(self)

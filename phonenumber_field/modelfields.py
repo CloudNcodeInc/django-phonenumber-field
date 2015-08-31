@@ -1,13 +1,15 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
+
+from __future__ import unicode_literals
 
 from django.conf import settings
 from django.core import validators
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from phonenumber_field.validators import validate_international_phonenumber
 from phonenumber_field import formfields
+from phonenumber_field.validators import validate_international_phonenumber
 from phonenumber_field.phonenumber import PhoneNumber, to_python, string_types
-from django.core.exceptions import ValidationError
 
 
 class PhoneNumberDescriptor(object):
@@ -63,10 +65,10 @@ class PhoneNumberField(models.Field):
             pieces = [value.format_as(fmt)]
             if value.country_id:
                 pieces.insert(0, value.country_id)
-            value = unicode(PhoneNumber.country_id_sep).join(pieces)
+            value = PhoneNumber.country_id_sep.join(pieces)
         else:
             if not self.null:
-                value = unicode('')
+                value = ''
         return value
 
     def to_python(self, value):

@@ -4,10 +4,14 @@ when you run "manage.py test".
 
 Replace this with more appropriate tests for your application.
 """
+# -*- encoding: utf-8 -*-
+
+from __future__ import unicode_literals
 
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.test import TestCase
+from django.utils.encoding import force_text
 
 
 class PhonenumerFieldAppTest(TestCase):
@@ -31,10 +35,10 @@ class PhonenumerFieldAppTest(TestCase):
 
         tm = TestModel.objects.get(pk=pk)
         self.assertIsInstance(tm.phone, PhoneNumber)
-        self.assertEqual(unicode(tm.phone), '+41524242424')
+        self.assertEqual(force_text(tm.phone), '+41524242424')
         self.assertIsNone(tm.phone.country_id)
 
-        tm.phone = PhoneNumber.country_id_sep.join(['CH', unicode(tm.phone)])
+        tm.phone = PhoneNumber.country_id_sep.join(['CH', force_text(tm.phone)])
         tm.save()
 
         tm = TestModel.objects.get(pk=pk)

@@ -1,12 +1,16 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
+
+from __future__ import unicode_literals
 
 import phonenumbers
 from django.conf import settings
 from django.core import validators
+from django.utils.encoding import force_text, python_2_unicode_compatible
 from django.utils.six import string_types
 from phonenumbers.phonenumberutil import NumberParseException
 
 
+@python_2_unicode_compatible
 class PhoneNumber(phonenumbers.phonenumber.PhoneNumber):
     """
     An extended version of phonenumbers.phonenumber.PhoneNumber that provides
@@ -33,9 +37,9 @@ class PhoneNumber(phonenumbers.phonenumber.PhoneNumber):
         return phone_number_obj
 
     def __len__(self):
-        return len(self.__unicode__())
+        return len(force_text(self))
 
-    def __unicode__(self):
+    def __str__(self):
         format_string = getattr(settings, 'PHONENUMBER_DEFAULT_FORMAT', 'E164')
         fmt = self.format_map[format_string]
         return self.format_as(fmt)
@@ -48,7 +52,7 @@ class PhoneNumber(phonenumbers.phonenumber.PhoneNumber):
         if self.is_valid():
             value = phonenumbers.format_number(self, fmt)
             if self.extension and fmt == phonenumbers.PhoneNumberFormat.E164:
-                value = unicode('{1}x{0.extension}').format(self, value)
+                value = '{1}x{0.extension}'.format(self, value)
             return value
         return self.raw_input
 

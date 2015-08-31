@@ -1,19 +1,24 @@
-#-*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
+
+from __future__ import unicode_literals
+
 from django.forms import Select, TextInput
 from django.forms.widgets import MultiWidget
 from django.template import Context
 from django.template.loader import get_template
+from django.utils.encoding import force_text
+
 from .models import CountryCode
 
-COUNTRY_CODE_CHOICE_SEP = unicode(',')
+COUNTRY_CODE_CHOICE_SEP = ','
 
 
 def country_code_to_choice(country_code):
-    return unicode('{0.country.id}{1}{0.code.id}').format(country_code, COUNTRY_CODE_CHOICE_SEP)
+    return '{0.country.id}{1}{0.code.id}'.format(country_code, COUNTRY_CODE_CHOICE_SEP)
 
 
 def country_code_to_display(country_code):
-    return unicode(country_code)
+    return force_text(country_code)
 
 
 def country_code_from_choice(choice):

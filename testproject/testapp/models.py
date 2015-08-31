@@ -1,8 +1,10 @@
-from django.db import models
-from phonenumber_field.modelfields import PhoneNumberField
-from phonenumber_field.fields.models.caseinsensitivecharfield import CaseInsensitiveCharField
+# -*- encoding: utf-8 -*-
 
-# Create your models here.
+from __future__ import unicode_literals
+
+from django.db import models
+from phonenumber_field.fields.models.caseinsensitivecharfield import CaseInsensitiveCharField
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class TestModel(models.Model):

@@ -1,14 +1,14 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 
-from django.test.testcases import TestCase
+from __future__ import unicode_literals
+
+from django.conf import settings
 from django.db import models
-
+from django.test.testcases import TestCase
 from phonenumbers import is_number_match, MatchType
-
 from phonenumber_field.modelfields import PhoneNumberField
 from phonenumber_field.phonenumber import PhoneNumber
 from phonenumber_field.validators import to_python
-from django.conf import settings
 
 
 ###############

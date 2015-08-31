@@ -1,6 +1,9 @@
+# -*- encoding: utf-8 -*-
 
-from setuptools import setup, find_packages
+from __future__ import unicode_literals
+
 from phonenumber_field import __version__
+from setuptools import setup, find_packages
 
 setup(
     name='django-phonenumber-field',
@@ -27,7 +30,6 @@ setup(
             'locale/*/LC_MESSAGES/*'
         ],
     },
-    use_2to3=True,
     zip_safe=False,
     classifiers=[
         'Development Status :: 3 - Alpha',
