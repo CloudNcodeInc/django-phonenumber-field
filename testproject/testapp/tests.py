@@ -13,16 +13,16 @@ from django.db import IntegrityError
 from django.test import TestCase
 from django.utils.encoding import force_text
 
-from phonenumber_field.phonenumber import PhoneNumber, to_python
+from phonenumber_field import phonenumber
 from testapp import models
 
 
 class PhonenumberFieldAppTest(TestCase):
 
     def test_to_python_country_id_parse(self):
-        value = PhoneNumber.country_id_sep.join(['CH', '+41524242424'])
-        self.assertEqual(to_python(value).country_id, 'CH')
-        self.assertIsNone(to_python('+41524242424').country_id)
+        value = phonenumber.PhoneNumber.country_id_sep.join(['CH', '+41524242424'])
+        self.assertEqual(phonenumber.to_python(value).country_id, 'CH')
+        self.assertIsNone(phonenumber.to_python('+41524242424').country_id)
 
     def test_save_field_to_database(self):
         instance = models.TestModel()
@@ -30,10 +30,10 @@ class PhonenumberFieldAppTest(TestCase):
         instance.full_clean()
         instance.save()
         instance = models.TestModel.objects.get(pk=instance.pk)
-        self.assertIsInstance(instance.phone, PhoneNumber)
+        self.assertIsInstance(instance.phone, phonenumber.PhoneNumber)
         self.assertEqual(force_text(instance.phone), '+41524242424')
         self.assertIsNone(instance.phone.country_id)
-        instance.phone = PhoneNumber.country_id_sep.join(['CH', force_text(instance.phone)])
+        instance.phone = phonenumber.PhoneNumber.country_id_sep.join(['CH', force_text(instance.phone)])
         instance.save()
         instance = models.TestModel.objects.get(pk=instance.pk)
         self.assertEqual(instance.phone.country_id, 'CH')
