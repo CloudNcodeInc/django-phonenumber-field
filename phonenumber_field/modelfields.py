@@ -30,9 +30,9 @@ class PhoneNumberDescriptor(object):
     def __get__(self, instance=None, owner=None):
         if instance is None:
             raise AttributeError(
-                "The '%s' attribute can only be accessed from %s instances."
-                % (self.field.name, owner.__name__))
-        return instance.__dict__[self.field.name]
+                "The '{0.field.name}' attribute can only be accessed from {1.__name__} instances.".format(self, owner)
+            )
+        return getattr(instance, self.field.name)
 
     def __set__(self, instance, value):
         instance.__dict__[self.field.name] = instance.to_python(value)
@@ -73,16 +73,14 @@ class PhoneNumberField(models.Field):
         if isinstance(value, string_types):
             value = to_python(value)
         if not (value is None or isinstance(value, PhoneNumber)):
-            raise ValidationError("'%s' is an invalid value." % value)
+            raise ValidationError("'{0}' is an invalid value.".format(value))
         return value
 
     def from_db_value(self, value, *args, **kwargs):
         return self.to_python(value)
 
     def formfield(self, **kwargs):
-        defaults = {
-            'form_class': formfields.PhoneNumberField,
-        }
+        defaults = {'form_class': formfields.PhoneNumberField}
         defaults.update(kwargs)
         return super(PhoneNumberField, self).formfield(**defaults)
 

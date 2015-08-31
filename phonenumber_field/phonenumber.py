@@ -48,7 +48,7 @@ class PhoneNumber(phonenumbers.phonenumber.PhoneNumber):
         if self.is_valid():
             value = phonenumbers.format_number(self, fmt)
             if self.extension and fmt == phonenumbers.PhoneNumberFormat.E164:
-                value = unicode('{}x{}').format(value, self.extension)
+                value = unicode('{1}x{0.extension}').format(self, value)
             return value
         return self.raw_input
 

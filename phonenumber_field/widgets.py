@@ -9,7 +9,7 @@ COUNTRY_CODE_CHOICE_SEP = unicode(',')
 
 
 def country_code_to_choice(country_code):
-    return unicode('{}{}{}').format(country_code.country.id, COUNTRY_CODE_CHOICE_SEP, country_code.code.id)
+    return unicode('{0.country.id}{1}{0.code.id}').format(country_code, COUNTRY_CODE_CHOICE_SEP)
 
 
 def country_code_to_display(country_code):
@@ -97,14 +97,14 @@ class PhoneNumberWidget(MultiWidget):
         if country_code or (self.empty_country_code and national_number):
             if country_code:
                 self.country_code = country_code
-                country_id = '%s,' % country_code.country.id
+                country_id = '{0.country.id},'.format(country_code)
             country_code = '+{0}-'.format(country_code.code.id or self.empty_country_code)
         if national_number:
             self.national_number = national_number
         if extension:
             self.extension = extension
-            extension = 'x%s' % extension
-        return '%s%s%s%s' % (country_id, country_code, national_number, extension or '')
+            extension = 'x{0}'.format(extension)
+        return '{0}{1}{2}{3}'.format(country_id, country_code, national_number, extension or '')
 
     def render(self, *args, **kwargs):
         attrs = kwargs.get('attrs', None) or {}
