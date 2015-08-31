@@ -89,6 +89,7 @@ class PhoneNumberFieldTestCase(TestCase):
 
     def test_storage_formats(self):
         """Perform aggregate tests for all db storage formats."""
+        # FIXME use override_settings
         old_format = getattr(settings, 'PHONENUMBER_DB_FORMAT', 'E164')
         for frmt in PhoneNumber.format_map:
             setattr(settings, 'PHONENUMBER_DB_FORMAT', frmt)
@@ -102,6 +103,7 @@ class PhoneNumberFieldTestCase(TestCase):
         Required output format is set as string constant to guarantee
         consistent database storage values.
         """
+        # FIXME use override_settings
         number = PhoneNumberField()
         old_format = getattr(settings, 'PHONENUMBER_DB_FORMAT', 'E164')
         for frmt in ['E164', 'RFC3966', 'INTERNATIONAL']:
