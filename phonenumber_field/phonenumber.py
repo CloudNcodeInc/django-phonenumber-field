@@ -85,21 +85,21 @@ def to_python(value):
     elif value and isinstance(value, string_types):
         result = value.split(PhoneNumber.country_id_sep, 1)
         len_result = len(result)
-        
+
         if len_result == 1:
             country_id, phone_number_str = (None, result[0])
         elif len_result == 2:
             country_id, phone_number_str = result
         else:
             country_id, phone_number_str = (None, "")
-        
+
         try:
             phone_number = PhoneNumber.from_string(phone_number=phone_number_str)
         except NumberParseException:
             # the string provided is not a valid PhoneNumber.
             phone_number = PhoneNumber(raw_input=phone_number_str)
         phone_number.country_id = country_id
-        
+
     elif isinstance(value, phonenumbers.phonenumber.PhoneNumber) and not isinstance(value, PhoneNumber):
         phone_number = PhoneNumber(value)
     elif isinstance(value, PhoneNumber):

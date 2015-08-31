@@ -46,7 +46,8 @@ class PhoneNumberField(models.Field):
     description = _("Phone number")
 
     def __init__(self, *args, **kwargs):
-        kwargs['max_length'] = kwargs.get('max_length', 131)# 128 for longest phone number + 2 for country id + 1 for comma
+        # 128 for longest phone number + 2 for country id + 1 for comma
+        kwargs['max_length'] = kwargs.get('max_length', 131)
         super(PhoneNumberField, self).__init__(*args, **kwargs)
         self.validators.append(validators.MaxLengthValidator(self.max_length))
 
@@ -55,7 +56,7 @@ class PhoneNumberField(models.Field):
 
     def get_prep_value(self, value):
         "Returns field's value prepared for saving into a database."
-        value = self.to_python(value)# PhoneNumber or None
+        value = self.to_python(value)  # PhoneNumber or None
         if isinstance(value, PhoneNumber):
             format_string = getattr(settings, 'PHONENUMBER_DB_FORMAT', 'E164')
             fmt = PhoneNumber.format_map[format_string]
@@ -74,7 +75,7 @@ class PhoneNumberField(models.Field):
         if not (value is None or isinstance(value, PhoneNumber)):
             raise ValidationError("'%s' is an invalid value." % value)
         return value
-    
+
     def from_db_value(self, value, *args, **kwargs):
         return self.to_python(value)
 

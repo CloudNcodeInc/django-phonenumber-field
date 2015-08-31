@@ -1,4 +1,4 @@
-import sys
+
 from setuptools import setup, find_packages
 from phonenumber_field import __version__
 
@@ -21,7 +21,7 @@ setup(
     maintainer_email='stefan.foulis@gmail.com',
     packages=find_packages(),
     include_package_data=True,
-    package_data = {
+    package_data={
         'phonenumber_field': [
             'templates/phonenumber_field/*.html',
             'locale/*/LC_MESSAGES/*',
