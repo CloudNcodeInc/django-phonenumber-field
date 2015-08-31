@@ -58,13 +58,9 @@ class UpperCaseCharFieldTestModelTestCase(TestCase):
         with self.assertRaises(ValidationError):
             instance.full_clean()
 
-    def test_max_length_db(self):
-        models.UpperCaseCharFieldTestModel.objects.create(value='bb')
-        self.assertNotEqual(models.UpperCaseCharFieldTestModel.objects.all()[0].value.upper(), 'bb')
-
     def test_max_length_db_truncates(self):
         models.UpperCaseCharFieldTestModel.objects.create(value='bb')
-        self.assertEqual(models.UpperCaseCharFieldTestModel.objects.all()[0].value.upper(), 'b')
+        self.assertEqual(models.UpperCaseCharFieldTestModel.objects.first().value, 'B')
 
     def test_create_and_lookup_convert_case(self):
         models.UpperCaseCharFieldTestModel.objects.create(value='A')
