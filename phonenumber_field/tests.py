@@ -34,7 +34,6 @@ class OptionalPhoneNumber(models.Model):
 
 class PhoneNumberFieldTestCase(TestCase):
 
-    test_number_1 = '+414204242'
     equal_number_strings = ['+44 113 8921113', '+441138921113']
     local_numbers = [
         ('GB', '01606 751 78'),
@@ -64,16 +63,16 @@ class PhoneNumberFieldTestCase(TestCase):
         )
 
     def test_field_returns_correct_type(self):
-        model = OptionalPhoneNumber()
-        self.assertIsNone(model.phone_number)
-        model.phone_number = '+49 176 96842671'
-        self.assertIsInstance(model.phone_number, phonenumber.PhoneNumber)
+        instance = OptionalPhoneNumber.objects.create()
+        self.assertIsNone(instance.phone_number)
+        instance.phone_number = '+49 176 96842671'
+        instance.save()
+        self.assertIsInstance(instance.phone_number, phonenumber.PhoneNumber)
 
     def test_can_assign_string_phone_number(self):
-        opt_phone = OptionalPhoneNumber()
-        opt_phone.phone_number = self.test_number_1
-        self.assertIsInstance(opt_phone.phone_number, phonenumber.PhoneNumber)
-        self.assertEqual(opt_phone.phone_number.as_e164, self.test_number_1)
+        instance = OptionalPhoneNumber.objects.create(phone_number='+414204242')
+        self.assertIsInstance(instance.phone_number, phonenumber.PhoneNumber)
+        self.assertEqual(instance.phone_number.as_e164, '+414204242')
 
     def test_does_not_fail_on_invalid_values(self):
         # testcase for
