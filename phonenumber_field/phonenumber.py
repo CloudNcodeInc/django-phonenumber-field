@@ -1,18 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import sys
 import phonenumbers
 from django.conf import settings
 from django.core import validators
 from django.utils.six import string_types
 from phonenumbers.phonenumberutil import NumberParseException
-
-
-# Snippet from the `six` library to help with Python3 compatibility
-if sys.version_info[0] == 3:
-    string_types = str
-else:
-    string_types = basestring
 
 
 class PhoneNumber(phonenumbers.phonenumber.PhoneNumber):
