@@ -9,7 +9,7 @@ class CountryCodeInline(admin.TabularInline):
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'active', 'codes')
-    inlines = (CountryCodeInline,)
+    inlines = (CountryCodeInline, )
     extra = 0
 
     def codes(self, country):
@@ -21,7 +21,7 @@ class CountryAdmin(admin.ModelAdmin):
 @admin.register(Code)
 class CodeAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'active', 'countries')
-    inlines = (CountryCodeInline,)
+    inlines = (CountryCodeInline, )
     extra = 0
 
     def countries(self, code):

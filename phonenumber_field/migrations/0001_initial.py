@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('active', models.BooleanField(default=False)),
             ],
             options={
-                'ordering': ('id',),
+                'ordering': ('id', ),
             },
         ),
         migrations.CreateModel(

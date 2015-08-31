@@ -19,7 +19,7 @@ class PhoneNumber(phonenumbers.phonenumber.PhoneNumber):
         'E164': phonenumbers.PhoneNumberFormat.E164,
         'INTERNATIONAL': phonenumbers.PhoneNumberFormat.INTERNATIONAL,
         'NATIONAL': phonenumbers.PhoneNumberFormat.NATIONAL,
-        'RFC3966': phonenumbers.PhoneNumberFormat.RFC3966,
+        'RFC3966': phonenumbers.PhoneNumberFormat.RFC3966
     }
 
     @classmethod

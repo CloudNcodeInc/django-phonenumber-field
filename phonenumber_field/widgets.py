@@ -118,7 +118,7 @@ class PhoneNumberWidget(MultiWidget):
             'number': rendered_widgets[1],
             'number_id': '{0}_1'.format(self._base_id),
             'extension': rendered_widgets[2],
-            'extension_id': '{0}_2'.format(self._base_id),
+            'extension_id': '{0}_2'.format(self._base_id)
         })
         t = get_template(self.template_name)
         return t.render(c)

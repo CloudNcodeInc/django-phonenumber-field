@@ -33,14 +33,14 @@ class PhoneNumberFieldTestCase(TestCase):
     equal_number_strings = ['+44 113 8921113', '+441138921113']
     local_numbers = [
         ('GB', '01606 751 78'),
-        ('DE', '0176/96842671'),
+        ('DE', '0176/96842671')
     ]
     storage_numbers = {
         'E164': ['+44 113 8921113', '+441138921113'],
         'RFC3966': ['+44 113 8921113', 'tel:+44-113-892-1113'],
-        'INTERNATIONAL': ['+44 113 8921113', '+44 113 892 1113'],
+        'INTERNATIONAL': ['+44 113 8921113', '+44 113 892 1113']
     }
-    invalid_numbers = ['+44 113 892111', ]
+    invalid_numbers = ['+44 113 892111']
 
     def test_valid_numbers_are_valid(self):
         numbers = [PhoneNumber.from_string(number_string)

@@ -12,7 +12,7 @@ setup(
     install_requires=[
         'django-countries',
         'phonenumbers>=7.0.2',
-        'babel',
+        'babel'
     ],
     long_description=open('README.rst').read(),
     author='Stefan Foulis',
@@ -24,7 +24,7 @@ setup(
     package_data={
         'phonenumber_field': [
             'templates/phonenumber_field/*.html',
-            'locale/*/LC_MESSAGES/*',
+            'locale/*/LC_MESSAGES/*'
         ],
     },
     use_2to3=True,
@@ -38,6 +38,6 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 3',
-        'Topic :: Internet :: WWW/HTTP',
+        'Topic :: Internet :: WWW/HTTP'
     ]
 )

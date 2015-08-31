@@ -13,7 +13,7 @@ from phonenumber_field.widgets import PhoneNumberWidget
 class PhoneNumberField(CharField):
     widget = PhoneNumberWidget
     default_error_messages = {
-        'invalid': _('Enter a valid phone number.'),
+        'invalid': _('Enter a valid phone number.')
     }
     default_validators = [validate_international_phonenumber]
 

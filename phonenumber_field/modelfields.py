@@ -92,7 +92,7 @@ try:
         (
             [PhoneNumberField],
             [],
-            {},
+            {}
         ),
     ], ['^phonenumber_field\.modelfields\.PhoneNumberField'])
 except ImportError:

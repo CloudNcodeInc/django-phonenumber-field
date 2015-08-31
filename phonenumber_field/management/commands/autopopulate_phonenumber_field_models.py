@@ -63,7 +63,7 @@ class Command(BaseCommand):
             fields = {
                 'id': key,
                 'name': new_dict[key]['name'],
-                'active': True,
+                'active': True
             }
             country = Country(**fields)
 
