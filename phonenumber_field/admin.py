@@ -49,10 +49,8 @@ class CountryCodeAdmin(admin.ModelAdmin):
 
     def get_country_active(self, country_code):
         if country_code.country.active:
-            html = '<img src="/static/admin/img/icon-yes.gif" alt="True" />'
-        else:
-            html = '<img src="/static/admin/img/icon-no.gif" alt="False" />'
-        return html
+            return '<img src="/static/admin/img/icon-yes.gif" alt="True" />'
+        return '<img src="/static/admin/img/icon-no.gif" alt="False" />'
     get_country_active.short_description = 'Country Active'
     get_country_active.admin_order_field = 'country__active'
     get_country_active.allow_tags = True
@@ -64,18 +62,14 @@ class CountryCodeAdmin(admin.ModelAdmin):
 
     def get_code_active(self, country_code):
         if country_code.code.active:
-            html = '<img src="/static/admin/img/icon-yes.gif" alt="True" />'
-        else:
-            html = '<img src="/static/admin/img/icon-no.gif" alt="False" />'
-        return html
+            return '<img src="/static/admin/img/icon-yes.gif" alt="True" />'
+        return '<img src="/static/admin/img/icon-no.gif" alt="False" />'
     get_code_active.short_description = 'Code Active'
     get_code_active.admin_order_field = 'code__active'
     get_code_active.allow_tags = True
 
     def all_active(self, country_code):
         if country_code.active and country_code.country.active and country_code.code.active:
-            html = '<img src="/static/admin/img/icon-yes.gif" alt="True" />'
-        else:
-            html = '<img src="/static/admin/img/icon-no.gif" alt="False" />'
-        return html
+            return '<img src="/static/admin/img/icon-yes.gif" alt="True" />'
+        return '<img src="/static/admin/img/icon-no.gif" alt="False" />'
     all_active.allow_tags = True
