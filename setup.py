@@ -1,7 +1,5 @@
 # -*- encoding: utf-8 -*-
 
-from __future__ import unicode_literals
-
 from phonenumber_field import __version__
 from setuptools import setup, find_packages
 
