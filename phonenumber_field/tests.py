@@ -3,7 +3,12 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django.test import override_settings, TestCase
+from django.test import TestCase
+try:
+    from django.test import override_settings
+except ImportError:
+    # Django <1.7
+    from django.test.utils import override_settings
 from phonenumbers import is_number_match, MatchType
 from phonenumber_field.modelfields import PhoneNumberField
 from phonenumber_field.phonenumber import PhoneNumber
