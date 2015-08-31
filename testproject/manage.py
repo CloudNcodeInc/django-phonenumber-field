@@ -2,8 +2,8 @@
 import os
 import sys
 
-if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "testproject.settings")
+if __name__ == '__main__':
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'testproject.settings')
 
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../').replace('\\', '/'))
 

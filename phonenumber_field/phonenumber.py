@@ -17,8 +17,8 @@ else:
 
 class PhoneNumber(phonenumbers.phonenumber.PhoneNumber):
     """
-    A extended version of phonenumbers.phonenumber.PhoneNumber that provides
-    some neat and more pythonic, easy to access methods. This makes using a
+    An extended version of phonenumbers.phonenumber.PhoneNumber that provides
+    some neat and more Pythonic, easy to access methods. This makes using a
     PhoneNumber instance much easier, especially in templates and such.
     """
     country_id = None
@@ -46,16 +46,14 @@ class PhoneNumber(phonenumbers.phonenumber.PhoneNumber):
         return self.format_as(fmt)
 
     def is_valid(self):
-        """
-        checks whether the number supplied is actually valid
-        """
+        """checks whether the number supplied is actually valid."""
         return phonenumbers.is_valid_number(self)
 
     def format_as(self, fmt):
         if self.is_valid():
             value = phonenumbers.format_number(self, fmt)
             if self.extension and fmt == phonenumbers.PhoneNumberFormat.E164:
-                value = unicode("{}x{}").format(value, self.extension)
+                value = unicode('{}x{}').format(value, self.extension)
             return value
         return self.raw_input
 
@@ -91,7 +89,7 @@ def to_python(value):
         elif len_result == 2:
             country_id, phone_number_str = result
         else:
-            country_id, phone_number_str = (None, "")
+            country_id, phone_number_str = (None, '')
 
         try:
             phone_number = PhoneNumber.from_string(phone_number=phone_number_str)

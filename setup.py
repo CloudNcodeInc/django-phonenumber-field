@@ -3,12 +3,12 @@ from setuptools import setup, find_packages
 from phonenumber_field import __version__
 
 setup(
-    name="django-phonenumber-field",
+    name='django-phonenumber-field',
     version=__version__,
     url='http://github.com/stefanfoulis/django-phonenumber-field',
     license='BSD',
     platforms=['OS Independent'],
-    description="An international phone number field for django models.",
+    description='An international phone number field for django models.',
     install_requires=[
         'django-countries',
         'phonenumbers>=7.0.2',

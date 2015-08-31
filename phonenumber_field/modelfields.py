@@ -43,7 +43,7 @@ class PhoneNumberField(models.Field):
     descriptor_class = PhoneNumberDescriptor
     default_validators = [validate_international_phonenumber]
 
-    description = _("Phone number")
+    description = _('Phone number')
 
     def __init__(self, *args, **kwargs):
         # 128 for longest phone number + 2 for country id + 1 for comma
@@ -52,10 +52,10 @@ class PhoneNumberField(models.Field):
         self.validators.append(validators.MaxLengthValidator(self.max_length))
 
     def get_internal_type(self):
-        return "CharField"
+        return 'CharField'
 
     def get_prep_value(self, value):
-        "Returns field's value prepared for saving into a database."
+        """Returns field's value prepared for saving into a database."""
         value = self.to_python(value)  # PhoneNumber or None
         if isinstance(value, PhoneNumber):
             format_string = getattr(settings, 'PHONENUMBER_DB_FORMAT', 'E164')
@@ -66,7 +66,7 @@ class PhoneNumberField(models.Field):
             value = unicode(PhoneNumber.country_id_sep).join(pieces)
         else:
             if not self.null:
-                value = unicode("")
+                value = unicode('')
         return value
 
     def to_python(self, value):
@@ -94,6 +94,6 @@ try:
             [],
             {},
         ),
-    ], ["^phonenumber_field\.modelfields\.PhoneNumberField"])
+    ], ['^phonenumber_field\.modelfields\.PhoneNumberField'])
 except ImportError:
     pass

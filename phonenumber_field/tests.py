@@ -82,17 +82,13 @@ class PhoneNumberFieldTestCase(TestCase):
         self.asserIsNone(phone)
 
     def _test_storage_formats(self):
-        '''
-        Aggregate of tests to perform for db storage formats
-        '''
+        """Aggregate of tests to perform for db storage formats."""
         self.test_objects_with_same_number_are_equal()
         self.test_field_returns_correct_type()
         self.test_can_assign_string_phone_number()
 
     def test_storage_formats(self):
-        '''
-        Perform aggregate tests for all db storage formats
-        '''
+        """Perform aggregate tests for all db storage formats."""
         old_format = getattr(settings, 'PHONENUMBER_DB_FORMAT', 'E164')
         for frmt in PhoneNumber.format_map:
             setattr(settings, 'PHONENUMBER_DB_FORMAT', frmt)
@@ -100,12 +96,12 @@ class PhoneNumberFieldTestCase(TestCase):
         setattr(settings, 'PHONENUMBER_DB_FORMAT', old_format)
 
     def test_prep_value(self):
-        '''
+        """
         Tests correct db storage value against different setting of
-        PHONENUMBER_DB_FORMAT
+        PHONENUMBER_DB_FORMAT.
         Required output format is set as string constant to guarantee
-        consistent database storage values
-        '''
+        consistent database storage values.
+        """
         number = PhoneNumberField()
         old_format = getattr(settings, 'PHONENUMBER_DB_FORMAT', 'E164')
         for frmt in ['E164', 'RFC3966', 'INTERNATIONAL']:
